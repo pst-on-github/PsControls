@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows,netstandard2.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+
+  <!-- <ItemGroup>
+    <Page Update="Themes\SearchTextBox.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup> -->
+
+  <ItemGroup>
+	  <Resource Include="images/search.png" />
+	  <Resource Include="images/clear.png" />
+  </ItemGroup>
+
+</Project>
