@@ -15,12 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="images/search.png" />
-    <Resource Include="images/clear.png" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.39.0.47922">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
