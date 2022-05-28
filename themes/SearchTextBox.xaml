@@ -67,7 +67,8 @@
                                 Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=LabelTextColor}"
                                 Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=LabelText}"
                                 Padding="2,0,0,0"
-                                FontStyle="Italic" />
+                                FontStyle="Italic"
+                                IsHitTestVisible="false" />
                             <Border x:Name="PART_SearchIconBorder"
                                  Grid.Column="1"
                                  BorderThickness="1"
@@ -76,13 +77,18 @@
                                  HorizontalAlignment="Stretch"
                                  BorderBrush="{StaticResource SearchTextBox.Static.SearchIconBorder}"
                                  Background="{StaticResource SearchTextBox.Static.SearchIconBackground}">
-                                <Image x:Name="SearchIcon"
+                                <!-- <Image x:Name="SearchIcon"
                                  Stretch="None"
                                  Width="15"
                                  Height="15"
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"
-                                 Source="pack://application:,,,/UIControls;component/Images/search.png" />
+                                 Source="pack://application:,,,/PsControls;component/Images/search.png" /> -->
+                                 <TextBlock x:Name="SearchIcon"
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center" 
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE721;" /><!--Search-->
                             </Border>
                         </Grid>
                     </Border>
@@ -103,9 +109,9 @@
                                 <Condition Property="HasText" Value="True" />
                                 <Condition Property="SearchMode" Value="Instant" />
                             </MultiTrigger.Conditions>
-                            <Setter Property="Source"
+                            <Setter Property="Text"
                                   TargetName="SearchIcon"
-                                  Value="pack://application:,,,/PsControls;component/Images/clear.png" />
+                                  Value="&#xE711;" /><!--Cancel-->
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>

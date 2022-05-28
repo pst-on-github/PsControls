@@ -11,9 +11,6 @@
 *.sln.docstates
 
 *.code-workspace
-vlc-log.txt
-**/appsettings.json
-*.appico
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

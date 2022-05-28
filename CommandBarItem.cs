@@ -48,23 +48,27 @@ namespace PsControls
     /// </summary>
     public class CommandBarItem : MenuItem
     {
+        /// <summary>
+        /// DependencyProperty for <see cref="IsMetroIcon" /> property.
+        /// </summary>
+        public static readonly DependencyProperty IsMetroIconProperty =
+            DependencyProperty.Register(
+                "IsMetroIcon",
+                typeof(bool),
+                typeof(CommandBarItem),
+                new PropertyMetadata(true));
+
         static CommandBarItem()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CommandBarItem), new FrameworkPropertyMetadata(typeof(CommandBarItem)));
         }
 
         /// <summary>
-        /// DependencyProperty for <see cref="IsMetroIcon" /> property.
-        /// </summary>
-        public static readonly DependencyProperty IsMetroIconProperty = DependencyProperty
-            .Register( "IsMetroIcon", typeof(bool), typeof(CommandBarItem), new PropertyMetadata(true));
-
-        /// <summary>
-        /// The HeaderFontFamily property specifies the name of font family used for the header.
+        /// Gets or sets a value indicating whether the header text will display METRO icons.
         /// </summary>
         public bool IsMetroIcon
         {
-            get { return (bool) GetValue(IsMetroIconProperty); }
+            get { return (bool)GetValue(IsMetroIconProperty); }
             set { SetValue(IsMetroIconProperty, value); }
         }
     }

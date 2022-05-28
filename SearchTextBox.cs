@@ -9,54 +9,99 @@ namespace PsControls
 {
     public enum SearchMode
     {
+        /// <summary>
+        /// The search command is executed immediately.
+        /// </summary>
         Instant,
+
+        /// <summary>
+        /// The search command is delayed.
+        /// </summary>
         Delayed,
     }
 
     public class SearchTextBox : TextBox
     {
-        public static DependencyProperty HasTextProperty = HasTextPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty HasTextProperty;
 
-        public static DependencyProperty IsMouseLeftButtonDownProperty =
-            IsMouseLeftButtonDownPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty IsMouseLeftButtonDownProperty;
 
-        public static DependencyProperty LabelTextColorProperty =
+        public static readonly DependencyProperty LabelTextColorProperty =
             DependencyProperty.Register(
                 "LabelTextColor",
                 typeof(Brush),
                 typeof(SearchTextBox));
 
-        public static DependencyProperty LabelTextProperty =
+        public static readonly DependencyProperty LabelTextProperty =
                 DependencyProperty.Register(
                 "LabelText",
                 typeof(string),
                 typeof(SearchTextBox));
 
-        public static DependencyProperty SearchModeProperty =
+        public static readonly DependencyProperty SearchModeProperty =
             DependencyProperty.Register(
                 "SearchMode",
                 typeof(SearchMode),
                 typeof(SearchTextBox),
                 new PropertyMetadata(SearchMode.Instant));
 
-        private static DependencyPropertyKey HasTextPropertyKey =
+        public static readonly DependencyProperty SearchCommandDelayProperty =
+            DependencyProperty.Register(
+            "SearchCommandDelay",
+            typeof(Duration),
+            typeof(SearchTextBox),
+            new FrameworkPropertyMetadata(
+                new Duration(new TimeSpan(0, 0, 0, 0, 250)),
+                new PropertyChangedCallback(SearchCommandDelayChanged)));
+
+        public static readonly DependencyProperty SearchCommandProperty =
+            DependencyProperty.Register(
+                "SearchCommand",
+                typeof(ICommand),
+                typeof(SearchTextBox));
+
+        public static readonly DependencyProperty SearchCommandParameterProperty =
+            DependencyProperty.Register(
+                "SearchCommandParameter",
+                typeof(object),
+                typeof(SearchTextBox));
+
+        private static readonly DependencyPropertyKey HasTextPropertyKey =
             DependencyProperty.RegisterReadOnly(
                 "HasText",
                 typeof(bool),
                 typeof(SearchTextBox),
                 new PropertyMetadata());
 
-        private static DependencyPropertyKey IsMouseLeftButtonDownPropertyKey = DependencyProperty.RegisterReadOnly(
-            "IsMouseLeftButtonDown",
-            typeof(bool),
-            typeof(SearchTextBox),
-            new PropertyMetadata());
+        private static readonly DependencyPropertyKey IsMouseLeftButtonDownPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                "IsMouseLeftButtonDown",
+                typeof(bool),
+                typeof(SearchTextBox),
+                new PropertyMetadata());
+
+        private readonly DispatcherTimer _searchCommandDelayTimer;
+
+        #pragma warning disable S3963
 
         static SearchTextBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(
                 typeof(SearchTextBox),
                 new FrameworkPropertyMetadata(typeof(SearchTextBox)));
+
+            HasTextProperty = HasTextPropertyKey.DependencyProperty;
+            IsMouseLeftButtonDownProperty = IsMouseLeftButtonDownPropertyKey.DependencyProperty;
+        }
+
+        public SearchTextBox()
+        {
+            _searchCommandDelayTimer = new DispatcherTimer
+            {
+                Interval = SearchCommandDelay.TimeSpan
+            };
+
+            _searchCommandDelayTimer.Tick += SearchEventDelayTimer_Tick;
         }
 
         public bool HasText
@@ -89,29 +134,55 @@ namespace PsControls
             set { SetValue(SearchModeProperty, value); }
         }
 
+        public ICommand SearchCommand
+        {
+            get { return (ICommand)GetValue(SearchCommandProperty); }
+            set { SetValue(SearchCommandProperty, value); }
+        }
+
+        public Duration SearchCommandDelay
+        {
+            get { return (Duration)GetValue(SearchCommandDelayProperty); }
+            set { SetValue(SearchCommandDelayProperty, value); }
+        }
+
+        public object SearchCommandParameter
+        {
+            get { return GetValue(SearchCommandParameterProperty); }
+            set { SetValue(SearchCommandParameterProperty, value); }
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             if (GetTemplateChild("PART_SearchIconBorder") is Border iconBorder)
             {
-                iconBorder.MouseLeftButtonDown += new MouseButtonEventHandler(IconBorder_MouseLeftButtonDown);
-                iconBorder.MouseLeftButtonUp += new MouseButtonEventHandler(IconBorder_MouseLeftButtonUp);
-                iconBorder.MouseLeave += new MouseEventHandler(IconBorder_MouseLeave);
+                iconBorder.MouseLeftButtonDown += IconBorder_MouseLeftButtonDown;
+                iconBorder.MouseLeftButtonUp += IconBorder_MouseLeftButtonUp;
+                iconBorder.MouseLeave += IconBorder_MouseLeave;
             }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.Escape && SearchMode == SearchMode.Instant)
+            bool handled = false;
+
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.None)
             {
-                this.Text = "";
+                if (e.Key == Key.Escape && SearchMode == SearchMode.Instant)
+                {
+                    Clear();
+                    handled = true;
+                }
+                else if ((e.Key == Key.Return || e.Key == Key.Enter) && SearchMode == SearchMode.Delayed)
+                {
+                    OnSearch();
+                    handled = true;
+                }
             }
-            else if ((e.Key == Key.Return || e.Key == Key.Enter) && SearchMode == SearchMode.Delayed)
-            {
-                // TODO RaiseSearchEvent();
-            }
-            else
+
+            if (!handled)
             {
                 base.OnKeyDown(e);
             }
@@ -122,11 +193,27 @@ namespace PsControls
             base.OnTextChanged(e);
             HasText = Text.Length != 0;
 
-
             if (SearchMode == SearchMode.Instant)
             {
-                searchEventDelayTimer.Stop();
-                searchEventDelayTimer.Start();
+                _searchCommandDelayTimer.Stop();
+                _searchCommandDelayTimer.Start();
+            }
+        }
+
+        protected virtual void OnSearch()
+        {
+            if (SearchCommand?.CanExecute(SearchCommandParameter) == true)
+            {
+                SearchCommand?.Execute(SearchCommandParameter);
+            }
+        }
+
+        private static void SearchCommandDelayChanged(DependencyObject dObj, DependencyPropertyChangedEventArgs e)
+        {
+            if (dObj is SearchTextBox searchTextBox)
+            {
+                searchTextBox._searchCommandDelayTimer.Interval = ((Duration)e.NewValue).TimeSpan;
+                searchTextBox._searchCommandDelayTimer.Stop();
             }
         }
 
@@ -142,88 +229,28 @@ namespace PsControls
 
         private void IconBorder_MouseLeftButtonUp(object obj, MouseButtonEventArgs e)
         {
-            if (!IsMouseLeftButtonDown) return;
+            if (!IsMouseLeftButtonDown)
+            {
+                return;
+            }
 
             if (HasText && SearchMode == SearchMode.Instant)
             {
-                this.Text = "";
+                Clear();
             }
+
             if (HasText && SearchMode == SearchMode.Delayed)
             {
-                //TODO RaiseSearchEvent();
+                OnSearch();
             }
 
             IsMouseLeftButtonDown = false;
         }
 
-
-
-
-
-        public static DependencyProperty SearchEventTimeDelayProperty =
-            DependencyProperty.Register(
-            "SearchEventTimeDelay",
-            typeof(Duration),
-            typeof(SearchTextBox),
-            new FrameworkPropertyMetadata(
-                new Duration(new TimeSpan(0, 0, 0, 0, 500)),
-                new PropertyChangedCallback(OnSearchEventTimeDelayChanged)));
-
-        public Duration SearchEventTimeDelay
+        private void SearchEventDelayTimer_Tick(object o, EventArgs e)
         {
-            get { return (Duration)GetValue(SearchEventTimeDelayProperty); }
-            set { SetValue(SearchEventTimeDelayProperty, value); }
+            _searchCommandDelayTimer.Stop();
+            OnSearch();
         }
-
-        static void OnSearchEventTimeDelayChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-        {
-            SearchTextBox stb = o as SearchTextBox;
-            if (stb != null)
-            {
-                stb.searchEventDelayTimer.Interval = ((Duration)e.NewValue).TimeSpan;
-                stb.searchEventDelayTimer.Stop();
-            }
-        }
-
-
-        public static readonly RoutedEvent SearchEvent =
-            EventManager.RegisterRoutedEvent(
-                "Search",
-                RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler),
-                typeof(SearchTextBox));
-
-
-        public event RoutedEventHandler Search
-        {
-            add { AddHandler(SearchEvent, value); }
-            remove { RemoveHandler(SearchEvent, value); }
-        }
-
-
-        private void RaiseSearchEvent()
-        {
-            RoutedEventArgs args = new RoutedEventArgs(SearchEvent);
-            RaiseEvent(args);
-        }
-
-
-        private DispatcherTimer searchEventDelayTimer;
-
-        public SearchTextBox() : base()
-        {
-            searchEventDelayTimer = new DispatcherTimer();
-            searchEventDelayTimer.Interval = SearchEventTimeDelay.TimeSpan;
-            searchEventDelayTimer.Tick += new EventHandler(OnSeachEventDelayTimerTick);
-        }
-
-
-        void OnSeachEventDelayTimerTick(object o, EventArgs e)
-        {
-            searchEventDelayTimer.Stop();
-            RaiseSearchEvent();
-        }
-
-
     }
 }

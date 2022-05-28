@@ -1,20 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows,netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <CodeAnalysisRuleSet>../analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
+  <PropertyGroup>
+		<Version>2.0.1+$([System.DateTime]::UtcNow.ToString(yyMMddHHmm))</Version>
+  </PropertyGroup>
 
-  <!-- <ItemGroup>
-    <Page Update="Themes\SearchTextBox.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-  </ItemGroup> -->
+  <ItemGroup> 
+      <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
 
   <ItemGroup>
-	  <Resource Include="images/search.png" />
-	  <Resource Include="images/clear.png" />
+    <Resource Include="images/search.png" />
+    <Resource Include="images/clear.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.39.0.47922">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
