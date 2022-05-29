@@ -1,0 +1,23 @@
+<UserControl x:Class="PsControls.View.BaseDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converter="clr-namespace:PsControls.Windows.Data">
+
+    <UserControl.Resources>
+        <converter:VisibilityConverter x:Key="Visibility" />
+    </UserControl.Resources>
+
+    <UserControl.Template>
+        <ControlTemplate TargetType="UserControl">
+            <StackPanel Margin="4">
+                <Label Content="{Binding Title}" Margin="4" />
+                <!-- Bind to the content property of the UserControl -->
+                <ContentPresenter Content="{TemplateBinding Content}" ContentStringFormat="Binding ContentStringFormat" Margin="4" />
+                <StackPanel Margin="4" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button Margin="4" Width="80" Command="{Binding CancelCommand}" IsCancel="true" Visibility="{Binding ShowCancelButton, Converter={StaticResource Visibility}, ConverterParameter=Collapsed}" >Cancel</Button>
+                    <Button Margin="4" Width="80" Command="{Binding QueryOkCommand}" IsDefault="true">Ok</Button>
+                </StackPanel>
+            </StackPanel>
+        </ControlTemplate>
+    </UserControl.Template>
+</UserControl>

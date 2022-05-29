@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 
 #pragma warning disable RCS1226 // Add paragraph to documentation comment.
 
-namespace PsControls
+namespace PsControls.Controls
 {
     /// <summary>
     /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
@@ -43,33 +43,14 @@ namespace PsControls
     /// Step 2)
     /// Go ahead and use your control in the XAML file.
     ///
-    ///     <MyNamespace:CommandItem/>
+    ///     <MyNamespace:AppButton/>
     ///
     /// </summary>
-    public class CommandBarItem : MenuItem
+    public class AppButton : MenuItem
     {
-        /// <summary>
-        /// DependencyProperty for <see cref="IsMetroIcon" /> property.
-        /// </summary>
-        public static readonly DependencyProperty IsMetroIconProperty =
-            DependencyProperty.Register(
-                "IsMetroIcon",
-                typeof(bool),
-                typeof(CommandBarItem),
-                new PropertyMetadata(true));
-
-        static CommandBarItem()
+        static AppButton()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(CommandBarItem), new FrameworkPropertyMetadata(typeof(CommandBarItem)));
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the header text will display METRO icons.
-        /// </summary>
-        public bool IsMetroIcon
-        {
-            get { return (bool)GetValue(IsMetroIconProperty); }
-            set { SetValue(IsMetroIconProperty, value); }
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(AppButton), new FrameworkPropertyMetadata(typeof(AppButton)));
         }
     }
 }

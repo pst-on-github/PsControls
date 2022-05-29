@@ -1,0 +1,9 @@
+<UserControl x:Class="PsControls.View.QueryDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:view="clr-namespace:PsControls.View">
+
+    <view:BaseDialogView>
+        <Label Content="{Binding Content}" />
+    </view:BaseDialogView>
+</UserControl>

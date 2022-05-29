@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 
 #pragma warning disable RCS1226 // Add paragraph to documentation comment.
 
-namespace PsControls
+namespace PsControls.Controls
 {
     /// <summary>
     /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
@@ -43,14 +43,14 @@ namespace PsControls
     /// Step 2)
     /// Go ahead and use your control in the XAML file.
     ///
-    ///     <MyNamespace:AppButton/>
+    ///     <MyNamespace:CommandItem/>
     ///
     /// </summary>
-    public class AppButton : MenuItem
+    public class CommandBar : Menu
     {
-        static AppButton()
+        static CommandBar()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(AppButton), new FrameworkPropertyMetadata(typeof(AppButton)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CommandBar), new FrameworkPropertyMetadata(typeof(CommandBar)));
         }
     }
 }

@@ -1,4 +1,4 @@
-# PcControls
+# PsControls
 
 Custom WPF controls.
 
@@ -19,4 +19,8 @@ Many thanks to David Owens for his wonderful article [Building a Search Text Box
 ### V2.0.1
 
 - Clean-up
-- Working Search Text Box
+
+### V3.0.0
+
+- Restructured folders and namespaces
+- Added some generic views, converter and commands
