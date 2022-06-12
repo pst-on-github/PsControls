@@ -16,9 +16,6 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "presentation": {
-                "reveal": "silent"
-            },
             "problemMatcher": "$msCompile"
         },
         {
@@ -27,7 +24,8 @@
             "type": "shell",
             "args": [
                 "pack",
-                "-c", "debug",
+                "--include-symbols",
+                "-c", "Release",
                 "-o", "D:/Users/Peter/Documents/Technik/Source/dotnet/publish"
              ],
             "problemMatcher": "$msCompile"

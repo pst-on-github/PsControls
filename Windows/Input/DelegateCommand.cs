@@ -10,27 +10,42 @@ namespace PsControls.Windows.Input
     public class DelegateCommand : ICommand
     {
         private readonly Predicate<object> _canExecute;
-        private readonly Action<object, DelegateEventArgs> _executeEvent;
         private readonly Action<object> _execute;
 
-        public DelegateCommand(Action<object> execute)
-            : this(execute, null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class.
+        /// </summary>
+        public DelegateCommand()
         {
         }
 
-        public DelegateCommand(Action<object> execute, Predicate<object> canExecute)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The action to be called when the command executes.</param>
+        /// <param name="canExecute">
+        /// The predicate to be called to check whether
+        /// the command can be executed.
+        /// </param>
+        public DelegateCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
 
-        public DelegateCommand(Action<object, DelegateEventArgs> execute, Predicate<object> canExecute)
-        {
-            _executeEvent = execute;
-            _canExecute = canExecute;
-        }
+        /// <summary>
+        /// Occurs when this command executes.
+        /// </summary>
+        public event EventHandler<ExecutedDelegateEventArgs> CommandExecuted;
 
-        #region ICommand Members
+        /// <summary>
+        /// Occurs when this command initiates a check to determine whether the command can be executed.
+        /// </summary>
+        public event EventHandler<CanExecuteDelegateEventArgs> CommandCanExecute;
+
+        // ================
+        // ICommand Members
+        // ================
 
         /// <inheritdoc cref="ICommand.CanExecuteChanged" />
         public event EventHandler CanExecuteChanged;
@@ -38,22 +53,34 @@ namespace PsControls.Windows.Input
         /// <inheritdoc cref="ICommand.CanExecute" />
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
+            if (_canExecute != null)
             {
-                return true;
+                return _canExecute.Invoke(parameter);
+            }
+            else if (CommandCanExecute != null)
+            {
+                CanExecuteDelegateEventArgs args = new () { CanExecute = false };
+
+                CommandCanExecute.Invoke(this, args);
+
+                return args.CanExecute;
             }
 
-            return _canExecute.Invoke(parameter);
+            return true;
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
         public void Execute(object parameter)
         {
-            _execute?.Invoke(parameter);
-            _executeEvent?.Invoke(this, new DelegateEventArgs(parameter));
+            if (_execute != null)
+            {
+                _execute?.Invoke(parameter);
+            }
+            else if (CommandExecuted != null)
+            {
+                CommandExecuted.Invoke(this, new ExecutedDelegateEventArgs(parameter));
+            }
         }
-
-        #endregion
 
         /// <summary>
         /// Raise the <see cref="CanExecuteChanged"/>  event.

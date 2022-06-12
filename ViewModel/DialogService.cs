@@ -7,10 +7,17 @@ using System.Windows.Input;
 
 namespace PsControls.ViewModel
 {
+    /// <summary>
+    /// Provides a logic to handle dialogs.
+    /// </summary>
     public static class DialogService
     {
-        private static readonly Dictionary<BaseDialogViewModel, Window> _knownVms = new();
+        private static readonly Dictionary<BaseDialogViewModel, Window> _knownVms = new ();
 
+        /// <summary>
+        /// Attaches a view models as content to the given dialog.
+        /// </summary>
+        /// <param name="content">The content to be shown in the dialog.</param>
         public static void Attach(BaseDialogViewModel content)
         {
             if (!_knownVms.ContainsKey(content))

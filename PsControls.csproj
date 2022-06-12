@@ -3,11 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <CodeAnalysisRuleSet>../analyzers.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- <CodeAnalysisRuleSet>../analyzers.ruleset</CodeAnalysisRuleSet> -->
   </PropertyGroup>
 
   <PropertyGroup>
-		<Version>3.0+$([System.DateTime]::UtcNow.ToString(yyMMddHHmm))</Version>
+		<Version>4.0.1+$([System.DateTime]::UtcNow.ToString(yyMMdd.HHmm))</Version>
+		<!-- <Version>4.0.1-beta.$([System.DateTime]::UtcNow.Ticks.ToString(x))</Version> -->
   </PropertyGroup>
 
   <ItemGroup> 

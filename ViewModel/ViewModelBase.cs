@@ -3,8 +3,14 @@ using System.Runtime.CompilerServices;
 
 namespace PsControls.ViewModel
 {
+    /// <summary>
+    /// Provides basic feature for view models.
+    /// </summary>
     public class ViewModelBase : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Occurs when any event changes its value.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -17,6 +23,10 @@ namespace PsControls.ViewModel
             return count != 1 ? "s" : string.Empty;
         }
 
+        /// <summary>
+        /// Called when any of the properties changes its value.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that changed.</param>
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

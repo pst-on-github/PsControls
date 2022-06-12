@@ -7,6 +7,9 @@ using System.Windows.Threading;
 
 namespace PsControls.Controls
 {
+    /// <summary>
+    /// Defines possible operation modes of the <see cref="SearchTextBox"/>.
+    /// </summary>
     public enum SearchMode
     {
         /// <summary>
@@ -20,24 +23,43 @@ namespace PsControls.Controls
         Delayed,
     }
 
+    /// <summary>
+    /// Represents a control similar to <see cref="TextBox"/>. Additionally it provides
+    /// a background label text, a clear button and a delayed search event.
+    /// </summary>
     public class SearchTextBox : TextBox
     {
+        /// <summary>
+        /// Identifies the <see cref="HasText"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty HasTextProperty;
 
-        public static readonly DependencyProperty IsMouseLeftButtonDownProperty;
+        /// <summary>
+        /// Identifies the <see cref="IsLeftMouseButtonDown"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsLeftMouseButtonDownProperty;
 
+        /// <summary>
+        /// Identifies the <see cref="LabelTextColor"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty LabelTextColorProperty =
             DependencyProperty.Register(
                 "LabelTextColor",
                 typeof(Brush),
                 typeof(SearchTextBox));
 
+        /// <summary>
+        /// Identifies the <see cref="LabelText"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty LabelTextProperty =
                 DependencyProperty.Register(
                 "LabelText",
                 typeof(string),
                 typeof(SearchTextBox));
 
+        /// <summary>
+        /// Identifies the <see cref="SearchMode"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SearchModeProperty =
             DependencyProperty.Register(
                 "SearchMode",
@@ -45,21 +67,30 @@ namespace PsControls.Controls
                 typeof(SearchTextBox),
                 new PropertyMetadata(SearchMode.Instant));
 
+        /// <summary>
+        /// Identifies the <see cref="SearchCommandDelay"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SearchCommandDelayProperty =
             DependencyProperty.Register(
             "SearchCommandDelay",
-            typeof(Duration),
+            typeof(TimeSpan),
             typeof(SearchTextBox),
             new FrameworkPropertyMetadata(
-                new Duration(new TimeSpan(0, 0, 0, 0, 250)),
+                TimeSpan.FromMilliseconds(250),
                 new PropertyChangedCallback(SearchCommandDelayChanged)));
 
+        /// <summary>
+        /// Identifies the <see cref="SearchCommand"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SearchCommandProperty =
             DependencyProperty.Register(
                 "SearchCommand",
                 typeof(ICommand),
                 typeof(SearchTextBox));
 
+        /// <summary>
+        /// Identifies the <see cref="SearchCommandParameter"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SearchCommandParameterProperty =
             DependencyProperty.Register(
                 "SearchCommandParameter",
@@ -73,9 +104,9 @@ namespace PsControls.Controls
                 typeof(SearchTextBox),
                 new PropertyMetadata());
 
-        private static readonly DependencyPropertyKey IsMouseLeftButtonDownPropertyKey =
+        private static readonly DependencyPropertyKey IsLeftMouseButtonDownPropertyKey =
             DependencyProperty.RegisterReadOnly(
-                "IsMouseLeftButtonDown",
+                "IsLeftMouseButtonDown",
                 typeof(bool),
                 typeof(SearchTextBox),
                 new PropertyMetadata());
@@ -91,79 +122,113 @@ namespace PsControls.Controls
                 new FrameworkPropertyMetadata(typeof(SearchTextBox)));
 
             HasTextProperty = HasTextPropertyKey.DependencyProperty;
-            IsMouseLeftButtonDownProperty = IsMouseLeftButtonDownPropertyKey.DependencyProperty;
+            IsLeftMouseButtonDownProperty = IsLeftMouseButtonDownPropertyKey.DependencyProperty;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SearchTextBox"/> class.
+        /// </summary>
         public SearchTextBox()
         {
             _searchCommandDelayTimer = new DispatcherTimer
             {
-                Interval = SearchCommandDelay.TimeSpan
+                Interval = SearchCommandDelay
             };
 
             _searchCommandDelayTimer.Tick += SearchEventDelayTimer_Tick;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the text property is not empty.
+        /// </summary>
         public bool HasText
         {
             get { return (bool)GetValue(HasTextProperty); }
             private set { SetValue(HasTextPropertyKey, value); }
         }
 
-        public bool IsMouseLeftButtonDown
+        /// <summary>
+        /// Gets a value indicating whether the left mouse button is down on this control.
+        /// </summary>
+        public bool IsLeftMouseButtonDown
         {
-            get { return (bool)GetValue(IsMouseLeftButtonDownProperty); }
-            private set { SetValue(IsMouseLeftButtonDownPropertyKey, value); }
+            get { return (bool)GetValue(IsLeftMouseButtonDownProperty); }
+            private set { SetValue(IsLeftMouseButtonDownPropertyKey, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the label text shown as background of the text input area.
+        /// </summary>
         public string LabelText
         {
             get { return (string)GetValue(LabelTextProperty); }
             set { SetValue(LabelTextProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the label text color as background of the text input area.
+        /// </summary>
         public Brush LabelTextColor
         {
             get { return (Brush)GetValue(LabelTextColorProperty); }
             set { SetValue(LabelTextColorProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the mode or operation. See also <seealso cref="Controls.SearchMode"/>.
+        /// </summary>
         public SearchMode SearchMode
         {
             get { return (SearchMode)GetValue(SearchModeProperty); }
             set { SetValue(SearchModeProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the command to invoke when the search event occurs. See also <seealso cref="SearchMode"/>.
+        /// </summary>
         public ICommand SearchCommand
         {
             get { return (ICommand)GetValue(SearchCommandProperty); }
             set { SetValue(SearchCommandProperty, value); }
         }
 
-        public Duration SearchCommandDelay
+        /// <summary>
+        /// Gets or sets the time span before the search event/command occurs after the last character input.
+        /// </summary>
+        public TimeSpan SearchCommandDelay
         {
-            get { return (Duration)GetValue(SearchCommandDelayProperty); }
+            get { return (TimeSpan)GetValue(SearchCommandDelayProperty); }
             set { SetValue(SearchCommandDelayProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the parameter to pass to the <see cref="SearchCommand"/> property.
+        /// </summary>
         public object SearchCommandParameter
         {
             get { return GetValue(SearchCommandParameterProperty); }
             set { SetValue(SearchCommandParameterProperty, value); }
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             if (GetTemplateChild("PART_SearchIconBorder") is Border iconBorder)
             {
-                iconBorder.MouseLeftButtonDown += IconBorder_MouseLeftButtonDown;
-                iconBorder.MouseLeftButtonUp += IconBorder_MouseLeftButtonUp;
+                iconBorder.MouseLeftButtonDown += IconBorder_LeftMouseButtonDown;
+                iconBorder.MouseLeftButtonUp += IconBorder_LeftMouseButtonUp;
                 iconBorder.MouseLeave += IconBorder_MouseLeave;
             }
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="e">Provides data about the event.</param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
             bool handled = false;
@@ -188,6 +253,10 @@ namespace PsControls.Controls
             }
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="e">Provides data about the event.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
             base.OnTextChanged(e);
@@ -200,6 +269,9 @@ namespace PsControls.Controls
             }
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         protected virtual void OnSearch()
         {
             if (SearchCommand?.CanExecute(SearchCommandParameter) == true)
@@ -219,17 +291,17 @@ namespace PsControls.Controls
 
         private void IconBorder_MouseLeave(object obj, MouseEventArgs e)
         {
-            IsMouseLeftButtonDown = false;
+            IsLeftMouseButtonDown = false;
         }
 
-        private void IconBorder_MouseLeftButtonDown(object obj, MouseButtonEventArgs e)
+        private void IconBorder_LeftMouseButtonDown(object obj, MouseButtonEventArgs e)
         {
-            IsMouseLeftButtonDown = true;
+            IsLeftMouseButtonDown = true;
         }
 
-        private void IconBorder_MouseLeftButtonUp(object obj, MouseButtonEventArgs e)
+        private void IconBorder_LeftMouseButtonUp(object obj, MouseButtonEventArgs e)
         {
-            if (!IsMouseLeftButtonDown)
+            if (!IsLeftMouseButtonDown)
             {
                 return;
             }
@@ -244,7 +316,7 @@ namespace PsControls.Controls
                 OnSearch();
             }
 
-            IsMouseLeftButtonDown = false;
+            IsLeftMouseButtonDown = false;
         }
 
         private void SearchEventDelayTimer_Tick(object o, EventArgs e)

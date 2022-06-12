@@ -19,7 +19,7 @@ namespace PsControls.Windows.Data
         /// <param name="parameter">Parameter controlling Hidden or Collapsed in case on invisibility.</param>
         /// <param name="culture">Culture to be used for conversions.</param>
         /// <returns>
-        /// Returns Visible if the value indicates true. If <paramref name="value"/> indicates false
+        /// Returns Visible if the value indicates true. If <paramref name="values"/> indicates false
         /// returns Hidden or Collapsed depending on <paramref name="parameter"/>. By default Hidden is returned.
         /// If <paramref name="parameter"/> is of type string only Hidden or Collapsed is allowed.
         /// </returns>
@@ -58,6 +58,7 @@ namespace PsControls.Windows.Data
             return isVisible ? Visibility.Visible : hiddenOrCollapsed;
         }
 
+        /// <inheritdoc/>
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             // Convert back is not implemented

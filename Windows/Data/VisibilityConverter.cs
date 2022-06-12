@@ -63,6 +63,7 @@ namespace PsControls.Windows.Data
             return isVisible ? Visibility.Visible : hiddenOrCollapsed;
         }
 
+        /// <inheritdoc/>
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             // Convert back is not implemented

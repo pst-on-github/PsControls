@@ -24,3 +24,12 @@ Many thanks to David Owens for his wonderful article [Building a Search Text Box
 
 - Restructured folders and namespaces
 - Added some generic views, converter and commands
+
+### V3.1.0
+
+- Added `Executed` and `CanExecute` events to `DelegateCommands`.
+
+### V4.0.0
+
+- Added xml documentation.
+- Changed MouseLeft to LeftMouse in SearchTextBox.

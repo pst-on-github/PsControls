@@ -140,7 +140,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" SourceName="PART_SearchIconBorder" Value="True" />
-                                <Condition Property="IsMouseLeftButtonDown" Value="True" />
+                                <Condition Property="IsLeftMouseButtonDown" Value="True" />
                                 <Condition Property="HasText" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter Property="Padding" TargetName="PART_SearchIconBorder" Value="2,0,0,0" />
