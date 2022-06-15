@@ -56,9 +56,17 @@ namespace PsControls.ViewModel
 
         private static void Window_Closed(object sender, EventArgs e)
         {
-            if (sender is Window win && win.Content is BaseDialogViewModel dialogVm)
+            if (sender is Window win)
             {
-                dialogVm.IsOpen = false;
+                if (win.Content is BaseDialogViewModel dialogVm)
+                {
+                    dialogVm.IsOpen = false;
+                }
+
+                // Setting the owner and giving it the focus prevents
+                // main window put in background after closing a child window
+                // See: https://stackoverflow.com/questions/21790062/wpf-main-window-put-in-background-after-closing-a-child-window
+                win.Owner?.Focus();
             }
         }
 

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-		<Version>4.0.1+$([System.DateTime]::UtcNow.ToString(yyMMdd.HHmm))</Version>
+		<Version>4.0.2+$([System.DateTime]::UtcNow.ToString(yyMMdd.HHmm))</Version>
 		<!-- <Version>4.0.1-beta.$([System.DateTime]::UtcNow.Ticks.ToString(x))</Version> -->
   </PropertyGroup>
 
