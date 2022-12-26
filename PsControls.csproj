@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- <CodeAnalysisRuleSet>../analyzers.ruleset</CodeAnalysisRuleSet> -->
   </PropertyGroup>
 
   <PropertyGroup>
-		<Version>4.0.2+$([System.DateTime]::UtcNow.ToString(yyMMdd.HHmm))</Version>
+		<Version>7.0.0+$([System.DateTime]::UtcNow.ToString(yyMMdd.HHmm))</Version>
 		<!-- <Version>4.0.1-beta.$([System.DateTime]::UtcNow.Ticks.ToString(x))</Version> -->
   </PropertyGroup>
 

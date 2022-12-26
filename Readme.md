@@ -33,3 +33,7 @@ Many thanks to David Owens for his wonderful article [Building a Search Text Box
 
 - Added xml documentation.
 - Changed MouseLeft to LeftMouse in SearchTextBox.
+
+### V7.0.0
+
+- Targeting dotnet 7.
