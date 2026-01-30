@@ -25,9 +25,11 @@
             "args": [
                 "pack",
                 "--include-symbols",
-                "-c", "Release",
-                "-o", "D:/Users/Peter/Documents/Technik/Source/dotnet/publish"
-             ],
+                "-c",
+                "Release",
+                "-o",
+                "D:/Users/Peter/Documents/Technik/Source/dotnet/publish"
+            ],
             "problemMatcher": "$msCompile"
         }
     ]

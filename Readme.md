@@ -37,3 +37,11 @@ Many thanks to David Owens for his wonderful article [Building a Search Text Box
 ### V7.0.0
 
 - Targeting dotnet 7.
+
+### V8.0.0
+
+- Targeting dotnet 8.
+
+### V8.0.0
+
+- Changed BaseDialogView in a way that it supports resizing in vertical direction and buttons dock to the bottom.

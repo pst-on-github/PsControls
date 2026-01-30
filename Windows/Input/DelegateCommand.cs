@@ -74,11 +74,11 @@ namespace PsControls.Windows.Input
         {
             if (_execute != null)
             {
-                _execute?.Invoke(parameter);
+                _execute.Invoke(parameter);
             }
-            else if (CommandExecuted != null)
+            else
             {
-                CommandExecuted.Invoke(this, new ExecutedDelegateEventArgs(parameter));
+                CommandExecuted?.Invoke(this, new ExecutedDelegateEventArgs(parameter));
             }
         }
 

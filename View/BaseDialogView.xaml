@@ -9,15 +9,21 @@
 
     <UserControl.Template>
         <ControlTemplate TargetType="UserControl">
-            <StackPanel Margin="4">
-                <Label Content="{Binding Title}" Margin="4" />
+            <Grid Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <Label Grid.Row="0" Content="{Binding Title}" Margin="4" />
                 <!-- Bind to the content property of the UserControl -->
-                <ContentPresenter Content="{TemplateBinding Content}" ContentStringFormat="Binding ContentStringFormat" Margin="4" />
-                <StackPanel Margin="4" Orientation="Horizontal" FlowDirection="RightToLeft">
+                <ContentPresenter Grid.Row="1" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="4" />
+                <StackPanel Grid.Row="2" Margin="4" Orientation="Horizontal" FlowDirection="RightToLeft">
                     <Button Margin="4" Width="80" Command="{Binding CancelCommand}" IsCancel="true" Visibility="{Binding ShowCancelButton, Converter={StaticResource Visibility}, ConverterParameter=Collapsed}" >Cancel</Button>
                     <Button Margin="4" Width="80" Command="{Binding QueryOkCommand}" IsDefault="true">Ok</Button>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </ControlTemplate>
     </UserControl.Template>
 </UserControl>
