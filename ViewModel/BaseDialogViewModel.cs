@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PsControls.ViewModel
 {
@@ -108,6 +110,17 @@ namespace PsControls.ViewModel
         {
             DialogService.Attach(this);
             IsOpen = true;
+        }
+
+        /// <summary>
+        /// Displays the dialog and yields until WPF has processed initial load/layout work.
+        /// </summary>
+        /// <returns>A task that completes once the dialog has had a chance to render.</returns>
+        public virtual async Task ShowAsync()
+        {
+            Show();
+            await Dispatcher.Yield(DispatcherPriority.Loaded);
+            await Dispatcher.Yield(DispatcherPriority.ContextIdle);
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace PsControls.ViewModel
             _answer = false;
             _completionSource = new ();
 
-            Show();
+            await ShowAsync().ConfigureAwait(true);
             await _completionSource.Task.ConfigureAwait(true);
 
             IsOpen = false;
