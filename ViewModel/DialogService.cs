@@ -47,6 +47,7 @@ namespace PsControls.ViewModel
                 {
                     var win = _knownVms[dialogVm];
                     win.Loaded -= Window_Loaded;
+                    win.ContentRendered -= Window_ContentRendered;
                     win.Closed -= Window_Closed;
                     _knownVms[dialogVm].Close();
                     _knownVms.Remove(dialogVm);
@@ -74,19 +75,43 @@ namespace PsControls.ViewModel
         {
             if (sender is Window win)
             {
-                // Don't allow the window to be smaller than the initial size from content
-                win.MinHeight = win.Height;
-                win.MinWidth = win.Width;
                 win.MoveFocus(new TraversalRequest(FocusNavigationDirection.First)); // First focus
-
-                // Defer some further changes to the window
-                win.Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    // Don't size to content, but let the user decide
-                    // after the window has been loaded
-                    win.SizeToContent = SizeToContent.Manual;
-                }));
             }
+        }
+
+        private static void Window_ContentRendered(object sender, EventArgs e)
+        {
+            if (sender is Window win)
+            {
+                RefitAndLockWindowSize(win);
+
+                // Run a second pass in case template/data changes are still queued.
+                win.Dispatcher.BeginInvoke(
+                    (Action)(() =>
+                    {
+                        RefitAndLockWindowSize(win);
+                    }),
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                win.ContentRendered -= Window_ContentRendered;
+            }
+        }
+
+        private static void RefitAndLockWindowSize(Window win)
+        {
+            win.MinHeight = 0;
+            win.MinWidth = 0;
+
+            win.SizeToContent = SizeToContent.WidthAndHeight;
+            win.UpdateLayout();
+
+            double fittedHeight = win.ActualHeight;
+            double fittedWidth = win.ActualWidth;
+
+            win.SizeToContent = SizeToContent.Manual;
+            win.Height = fittedHeight;
+            win.Width = fittedWidth;
+            win.MinHeight = fittedHeight;
+            win.MinWidth = fittedWidth;
         }
 
         private static Window CreateDialogWindow(BaseDialogViewModel content)
@@ -106,6 +131,7 @@ namespace PsControls.ViewModel
 
             win.Closed += Window_Closed;
             win.Loaded += Window_Loaded;
+            win.ContentRendered += Window_ContentRendered;
 
             return win;
         }

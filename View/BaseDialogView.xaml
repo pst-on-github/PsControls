@@ -19,9 +19,10 @@
                 <Label Grid.Row="0" Content="{Binding Title}" Margin="4" />
                 <!-- Bind to the content property of the UserControl -->
                 <ContentPresenter Grid.Row="1" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="4" />
-                <StackPanel Grid.Row="2" Margin="4" Orientation="Horizontal" FlowDirection="RightToLeft">
+                <StackPanel Grid.Row="2" Margin="4" Orientation="Horizontal" FlowDirection="RightToLeft"
+                            FocusManager.FocusedElement="{Binding ElementName=OkButton}">
                     <Button Margin="4" Width="80" Command="{Binding CancelCommand}" IsCancel="true" Visibility="{Binding ShowCancelButton, Converter={StaticResource Visibility}, ConverterParameter=Collapsed}" >Cancel</Button>
-                    <Button Margin="4" Width="80" Command="{Binding QueryOkCommand}" IsDefault="true">Ok</Button>
+                    <Button x:Name="OkButton" Margin="4" Width="80" Command="{Binding QueryOkCommand}" IsDefault="true">Ok</Button>
                 </StackPanel>
             </Grid>
         </ControlTemplate>

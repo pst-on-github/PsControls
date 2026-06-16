@@ -45,3 +45,7 @@ Many thanks to David Owens for his wonderful article [Building a Search Text Box
 ### V8.1.0
 
 - Changed BaseDialogView in a way that it supports resizing in vertical direction and buttons dock to the bottom.
+
+### V8.0.1
+
+- Changed BaseDialogView so the OK button has initial focus.
